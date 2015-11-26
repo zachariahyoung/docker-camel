@@ -9,7 +9,7 @@ public class CamelApplication extends FatJarRouter {
 	
 	@Override
 	public void configure() {
-		from("timer://trigger").transform().simple("ref:myBean").to("log:out", "activemq:queue:BRONTO.EVENT");
+		from("timer://trigger").transform().simple("ref:myBean").to("log:out", "activemq:queue:TRIGGER");
 		
 	}
 
