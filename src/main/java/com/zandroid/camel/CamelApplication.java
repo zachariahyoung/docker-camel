@@ -6,15 +6,13 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class CamelApplication extends FatJarRouter {
-	
-	@Override
-	public void configure() {
-		from("timer://trigger").transform().simple("ref:myBean").to("log:out", "activemq:queue:TRIGGER");
-		
-	}
 
 	@Bean
 	public String myBean() {
 		return "I'm Spring bean!";
 	}
+	
+	
+	
+	
 }
