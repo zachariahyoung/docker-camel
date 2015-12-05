@@ -24,15 +24,20 @@ public class CamelApplication extends FatJarRouter {
     public void configure() throws Exception {
 
 
-        from("activemqtx:TRIGGER").routeId("Trigger")
+        from("activemq:TRIGGER?transacted=true&concurrentConsumers=10").routeId("Trigger")
                 .onException(Exception.class)
                     .maximumRedeliveries(7)
                     .to("activemq:EXCEPTION")
                     .markRollbackOnlyLast().end()
-                .onException(UpperCaseException.class)
-                    .handled(true)
-                    .markRollbackOnlyLast()
-                    .end()
+                .transacted()
+                .bean("helloService")
+                .to("log:out");
+
+        from("activemqtx:TRIGGERTX").routeId("TriggerTX")
+                .onException(Exception.class)
+                    .maximumRedeliveries(7)
+                    .to("activemq:EXCEPTION")
+                    .markRollbackOnlyLast().end()
                 .transacted()
                 .bean("helloService")
                 .to("log:out");
