@@ -17,9 +17,13 @@ public class HelloService {
 
     @Handler
     @Transactional
-    public void save(String body){
+    public void save(String body) {
         Hello hello = new Hello(body);
 
+        if (body == null) {
+            throw new UpperCaseException();
+
+        }
         helloRepository.save(hello);
     }
 }

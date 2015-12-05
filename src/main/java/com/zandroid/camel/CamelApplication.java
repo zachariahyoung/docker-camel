@@ -1,96 +1,45 @@
 package com.zandroid.camel;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.camel.component.ActiveMQConfiguration;
-import org.apache.activemq.jms.pool.PooledConnection;
+import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.activemq.pool.PooledConnectionFactory;
-import org.apache.activemq.pool.PooledConnectionFactoryBean;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.spring.boot.FatJarRouter;
-import org.apache.camel.spring.spi.SpringTransactionPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.hibernate.exception.DataException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.JmsTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.annotation.Resource;
-import javax.jms.ConnectionFactory;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @SpringBootApplication
-@EnableTransactionManagement
-@EnableConfigurationProperties(ActiveMQProperties.class)
 public class CamelApplication extends FatJarRouter {
-//
-//    @Autowired
-//    private ActiveMQConnectionFactory test;
 
-//    @Autowired
-//    private ActiveMQProperties properties;
-//
-//    @Bean
-//    @Primary
-////    @DependsOn(value = "jmsConnectionFactory" )
-//    public PooledConnectionFactory pooledConnectionFactory(ActiveMQProperties properties) {
-//        PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory();
-//
-//        pooledConnectionFactory
-//                .setConnectionFactory(new ActiveMQConnectionFactoryFactory(properties)
-//                        .createConnectionFactory(ActiveMQConnectionFactory.class));
-//
-//        return pooledConnection;
-//
-//    }
-
-//
-//    @Bean
-//    @DependsOn(value = { "pooledConnectionFactory" })
-//    public JmsTransactionManager jmsTransactionManager(PooledConnectionFactory pooledConnectionFactory){
-//        return new JmsTransactionManager(pooledConnectionFactory);
-//
-//    }
-//
-//    @Bean
-//    public ActiveMQComponent activeMQComponent(PooledConnectionFactory pooledConnectionFactory,JmsTransactionManager jmsTransactionManager ){
-//
-//        ActiveMQComponent activeMQComponent = new ActiveMQComponent();
-//
-//        activeMQComponent.setConnectionFactory(pooledConnectionFactory);
-//        activeMQComponent.setTransactionManager(jmsTransactionManager);
-//
-////        activeMQComponent.setBrokerURL("tcp://192.168.99.100:32774");
-////        activeMQComponent.setUserName("admin");
-////        activeMQComponent.setPassword("admin");
-////        activeMQComponent.setUsePooledConnection(true);
-//       activeMQComponent.setTransacted(true);
-//
-//        return activeMQComponent;
-//    }
-
-
+    @Bean
+    public ActiveMQComponent activemqtx(PooledConnectionFactory pooledConnectionFactory) {
+        ActiveMQComponent activeMQComponent = new ActiveMQComponent();
+        activeMQComponent.setTransacted(true);
+        activeMQComponent.setTransactionManager(new JmsTransactionManager(pooledConnectionFactory));
+        return activeMQComponent;
+    }
 
 
     @Override
     public void configure() throws Exception {
 
 
-        errorHandler(deadLetterChannel("activemq:EXCEPTION").useOriginalMessage().maximumRedeliveries(1));
-
-        from("activemq:TRIGGER").routeId("Trigger")
+        from("activemqtx:TRIGGER").routeId("Trigger")
+                .onException(Exception.class)
+                    .maximumRedeliveries(7)
+                    .to("activemq:EXCEPTION")
+                    .markRollbackOnlyLast().end()
+                .onException(UpperCaseException.class)
+                    .handled(true)
+                    .markRollbackOnlyLast()
+                    .end()
+                .transacted()
                 .bean("helloService")
                 .to("log:out");
 
 
 //        from("activemq:TRIGGER").routeId("Trigger")
-//                //  .transacted()
+        //  .transacted()
 //                //.filter(x -> x.getIn().getBody() != null)
 //                //.wireTap("jms:orderAudit")
 //                //.process(x -> System.out.println(x.getIn().getBody()))
@@ -111,8 +60,6 @@ public class CamelApplication extends FatJarRouter {
 //
 //                .logNewException(true));
         //errorHandler(new TransactionErrorHandler().maximumRedeliveries(6));
-
-
 
 
 //        errorHandler();
