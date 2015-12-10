@@ -20,10 +20,10 @@ public class HelloService {
     public void save(String body) {
         Hello hello = new Hello(body);
 
-        if (body == null) {
+        if (body.equals("zzz")) {
             throw new UpperCaseException();
-
         }
+
         helloRepository.save(hello);
     }
 }
