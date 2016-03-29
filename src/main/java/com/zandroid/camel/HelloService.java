@@ -22,7 +22,9 @@ public class HelloService {
     public void save(String body) {
         Hello hello = new Hello(body);
 
-        if (body.equals("zzz")) {
+        helloRepository.save(hello);
+        log.info("Hello Service");
+        if (body.equals("test")) {
             log.warn("exception: UpperCaseException");
             throw new UpperCaseException();
         } else if (body.equals("yyy")) {
@@ -31,6 +33,6 @@ public class HelloService {
 
         }
 
-        helloRepository.save(hello);
+
     }
 }

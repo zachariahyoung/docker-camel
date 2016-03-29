@@ -8,6 +8,8 @@ import javax.persistence.*;
 @Data
 public class Hello {
 
+    protected Hello(){};
+
     public Hello(String text) {
         this.text = text;
     }
