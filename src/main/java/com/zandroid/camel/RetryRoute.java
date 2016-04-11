@@ -32,7 +32,7 @@ public class RetryRoute extends RouteBuilder {
                     .onException(UpperCaseException.class)
                     .maximumRedeliveries(2)
                     .handled(true)
-                    .to("activemq:EXCEPTION")
+                    .to("direct:error")
                     .markRollbackOnlyLast()
                     .end()
                 .transacted()

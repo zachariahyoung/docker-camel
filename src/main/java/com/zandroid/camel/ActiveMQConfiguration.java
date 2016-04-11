@@ -37,6 +37,7 @@ public class ActiveMQConfiguration {
         PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory();
         pooledConnectionFactory.setConnectionFactory(activeMQConnectionFactory);
         pooledConnectionFactory.setMaxConnections(maxConnections);
+//        pooledConnectionFactory.setMaximumActiveSessionPerConnection();
 
         // ActiveMQ Component
 
