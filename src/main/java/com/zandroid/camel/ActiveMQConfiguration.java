@@ -26,6 +26,8 @@ public class ActiveMQConfiguration {
     private int maxConnections;
 
 
+
+
     @Bean
     public ActiveMQComponent activemq() {
         // Connection Factory
@@ -89,8 +91,7 @@ public class ActiveMQConfiguration {
         System.out.println("SETTING UP AMQ WITH: " + brokerURL);
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory(brokerURL);
 
-        activeMQConnectionFactory.setUserName("jisazy1");
-        activeMQConnectionFactory.setPassword("haw123");
+       
         return activeMQConnectionFactory;
     }
 }

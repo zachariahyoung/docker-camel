@@ -12,7 +12,9 @@ public class RetryRoute extends RouteBuilder {
 //        getContext().setTracing(true);
 
         errorHandler(deadLetterChannel("activemq:ERROR.SERVER.Q.SUBDOMAIN.OBJECTNAME")
-                .useOriginalMessage());
+                .maximumRedeliveries(4)
+                .useOriginalMessage()
+                );
 
 //        errorHandler(transactionErrorHandler().maximumRedeliveries(6));
 
@@ -26,8 +28,8 @@ public class RetryRoute extends RouteBuilder {
 
 
         from("activemqtx:SERVER.Q.SUBDOMAIN.OBJECTNAME").routeId(RetryRoute.class.getSimpleName())
-                .transacted()
                 .bean("helloService")
+                .transacted()
                 .bean("byeService")
                 .to("log:out");
     }

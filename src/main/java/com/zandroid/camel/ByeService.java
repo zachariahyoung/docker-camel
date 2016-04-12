@@ -17,14 +17,12 @@ public class ByeService implements Processor {
         String body = exchange.getIn().getBody(String.class);
         if (body.equals("Hello Upper")) {
             log.warn(body);
-            exchange.setException(new UpperCaseException());
+            //exchange.setException(new UpperCaseException(body));
             throw new UpperCaseException(body);
         } else if (body.equals("Hello Lower")) {
             log.warn(body);
+            //exchange.setException(new LowerCaseException(body));
             throw new LowerCaseException(body);
-
         }
-
-
     }
 }
