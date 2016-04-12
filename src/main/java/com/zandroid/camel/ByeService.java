@@ -8,21 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-public class ExceptionService implements Processor {
+public class ByeService implements Processor {
 
     @Override
     @Transactional
     public void process(Exchange exchange) throws Exception {
 
         String body = exchange.getIn().getBody(String.class);
-        if (body.equals("small")) {
+        if (body.equals("Hello Upper")) {
             log.warn(body);
             exchange.setException(new UpperCaseException());
-        } else if (body.equals("big")) {
+            throw new UpperCaseException(body);
+        } else if (body.equals("Hello Lower")) {
             log.warn(body);
-            exchange.setException(new LowerCaseException());
-
-            throw new LowerCaseException();
+            throw new LowerCaseException(body);
 
         }
 

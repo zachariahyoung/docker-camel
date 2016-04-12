@@ -1,7 +1,6 @@
 package com.zandroid.camel;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.spring.spi.TransactionErrorHandler;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,35 +9,26 @@ public class RetryRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-//        errorHandler(deadLetterChannel("activemq:TEST").useOriginalMessage().
-//                disableRedelivery());
+//        getContext().setTracing(true);
+
+        errorHandler(deadLetterChannel("activemq:ERROR.SERVER.Q.SUBDOMAIN.OBJECTNAME")
+                .useOriginalMessage());
+
+//        errorHandler(transactionErrorHandler().maximumRedeliveries(6));
+
+
+//        onException(UpperCaseException.class)
+//                .maximumRedeliveries(2)
+//                .to("log:UpperCaseException")
+//                .to("activemq:ERROR.SERVER.Q.SUBDOMAIN.OBJECTNAME")
+//                .markRollbackOnlyLast();
 
 
 
-
-
-
-
-//        from("activemq:TRIGGER?transacted=true&concurrentConsumers=10").routeId("Trigger")
-//                .onException(Exception.class)
-//                    .maximumRedeliveries(7)
-//                    .to("activemq:EXCEPTION")
-//                    .markRollbackOnlyLast().end()
-//                .transacted()
-//                .bean("helloService")
-//                .to("log:out");
-
-        from("activemqtx:JPATX").routeId("TriggerTX")
-                    .onException(UpperCaseException.class)
-                    .maximumRedeliveries(2)
-                    .handled(true)
-                    .to("activemq:EXCEPTION")
-                    .markRollbackOnlyLast()
-                    .end()
+        from("activemqtx:SERVER.Q.SUBDOMAIN.OBJECTNAME").routeId(RetryRoute.class.getSimpleName())
                 .transacted()
-                .to("log:before")
                 .bean("helloService")
-                .bean("exceptionService")
+                .bean("byeService")
                 .to("log:out");
     }
 }

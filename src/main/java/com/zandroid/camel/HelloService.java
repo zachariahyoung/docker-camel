@@ -1,14 +1,16 @@
 package com.zandroid.camel;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Handler;
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
+import org.apache.camel.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-public class HelloService {
+public class HelloService implements Processor {
 
     private HelloRepository helloRepository;
 
@@ -17,21 +19,17 @@ public class HelloService {
         this.helloRepository = helloRepository;
     }
 
-    @Handler
+
+    @Override
     @Transactional
-    public void save(String body) {
+    public void process(Exchange exchange) throws Exception {
+
+        log.info("entering Hello Service");
+        Message in = exchange.getIn();
+        String body = in.getBody(String.class);
         Hello hello = new Hello(body);
-
         helloRepository.save(hello);
-        log.info("Hello Service");
-        if (body.equals("test")) {
-            log.warn("exception: UpperCaseException");
-            throw new UpperCaseException();
-        } else if (body.equals("yyy")) {
-            log.warn("exception: LowerCaseException");
-            throw new LowerCaseException();
-
-        }
+        in.setBody("Hello " + in.getBody());
 
 
     }
