@@ -6,6 +6,10 @@ public class LowerCaseException extends RuntimeException {
         super(message, cause);
     }
 
+    public LowerCaseException(String message) {
+        super(message);
+    }
+
     public LowerCaseException() {
     }
 }

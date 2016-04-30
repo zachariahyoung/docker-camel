@@ -26,6 +26,8 @@ public class ActiveMQConfiguration {
     private int maxConnections;
 
 
+
+
     @Bean
     public ActiveMQComponent activemq() {
         // Connection Factory
@@ -67,12 +69,11 @@ public class ActiveMQConfiguration {
         ActiveMQComponent activeMQComponent = new ActiveMQComponent();
         activeMQComponent.setConnectionFactory(pooledConnectionFactory);
         activeMQComponent.setCacheLevel(DefaultMessageListenerContainer.CACHE_CONSUMER);
-        activeMQComponent.setTransacted(true);
+//        activeMQComponent.setTransacted(true);
 
 
         return activeMQComponent;
     }
-
 
 
     private RedeliveryPolicy redeliveryPolicy() {
@@ -89,9 +90,6 @@ public class ActiveMQConfiguration {
     private ActiveMQConnectionFactory activeMQConnectionFactory(String brokerURL) {
         System.out.println("SETTING UP AMQ WITH: " + brokerURL);
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory(brokerURL);
-
-        //activeMQConnectionFactory.setUserName(pidCredentials.getUsername());
-        //activeMQConnectionFactory.setPassword(pidCredentials.getPassword());
 
         return activeMQConnectionFactory;
     }

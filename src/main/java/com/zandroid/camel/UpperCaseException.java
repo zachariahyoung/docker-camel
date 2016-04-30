@@ -6,6 +6,10 @@ public class UpperCaseException extends RuntimeException {
         super(message, cause);
     }
 
+    public UpperCaseException(String message) {
+        super(message);
+    }
+
     public UpperCaseException() {
     }
 }
