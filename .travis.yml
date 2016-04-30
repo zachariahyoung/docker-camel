@@ -1,0 +1,28 @@
+sudo: required
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+env:
+  global:
+    - COMMIT=${TRAVIS_COMMIT::7}
+    - DOCKER_IMAGE=zachariahyoung/docker-camel
+
+before_install:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" 
+  
+after_success:
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:$COMMIT
+  - docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:$TAG
+  - docker push $DOCKER_IMAGE:$COMMIT
+  - docker push $DOCKER_IMAGE:$TAG
+  
+cache:
+  directories:
+    - $HOME/.m2
