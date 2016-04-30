@@ -47,12 +47,6 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-camel</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>com.zandroid</groupId>
-			<artifactId>camel-error-route-spring-boot-autoconfigure</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
