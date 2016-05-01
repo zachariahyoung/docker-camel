@@ -1,0 +1,41 @@
+spring.profiles.active: development
+---
+spring:
+  profiles: development
+  data:
+    mongodb:
+      host: 192.168.99.100
+      port: 27017
+consumerBrokerURL: failover:(tcp://192.168.99.100:61616)
+producerBrokerURL: failover:(tcp://192.168.99.100:61616)
+maximumRedeliveryDelay: ${config.maximumRedeliveryDelay:60000}
+maxConnections: ${config.maxConnections:1}
+maxRetryAttempts: ${config.maxRetryAttempts:10}
+camel:
+  springboot:
+    name: camel
+error:
+  route:
+    in-url: direct:error
+    out-url: activemq:EXCEPTION
+
+---
+spring:
+  profiles: docker
+  data:
+    mongodb:
+      host: 192.168.99.100
+      port: 27017
+consumerBrokerURL: failover:(tcp://activemq:61616)
+producerBrokerURL: failover:(tcp://activemq:61616)
+maximumRedeliveryDelay: ${config.maximumRedeliveryDelay:60000}
+maxConnections: ${config.maxConnections:1}
+maxRetryAttempts: ${config.maxRetryAttempts:10}
+camel:
+  springboot:
+    name: camel
+error:
+  route:
+    in-url: direct:error
+    out-url: activemq:EXCEPTION
+

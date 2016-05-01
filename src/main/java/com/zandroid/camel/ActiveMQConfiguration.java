@@ -25,9 +25,6 @@ public class ActiveMQConfiguration {
     @Value("${maxConnections}")
     private int maxConnections;
 
-
-
-
     @Bean
     public ActiveMQComponent activemq() {
         // Connection Factory
@@ -39,7 +36,6 @@ public class ActiveMQConfiguration {
         PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory();
         pooledConnectionFactory.setConnectionFactory(activeMQConnectionFactory);
         pooledConnectionFactory.setMaxConnections(maxConnections);
-//        pooledConnectionFactory.setMaximumActiveSessionPerConnection();
 
         // ActiveMQ Component
 
@@ -90,6 +86,8 @@ public class ActiveMQConfiguration {
     private ActiveMQConnectionFactory activeMQConnectionFactory(String brokerURL) {
         System.out.println("SETTING UP AMQ WITH: " + brokerURL);
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory(brokerURL);
+        activeMQConnectionFactory.setUserName("admin");
+        activeMQConnectionFactory.setPassword("admin");
 
         return activeMQConnectionFactory;
     }

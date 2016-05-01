@@ -1,0 +1,17 @@
+activemq:
+  image: webcenter/activemq:latest
+  ports:
+   - 5672:5672
+   - 8161:8161
+   - 61613:61613
+   - 61614:61614
+   - 61616:61616
+docker-camel-service:
+  image: zachariahyoung/docker-camel
+  ports:
+   - 8081:8081
+  links:
+   - activemq
+  environment:
+   - SPRING_PROFILES_ACTIVE=docker
+   - DOCKER_IP=$DOCKER_IP
