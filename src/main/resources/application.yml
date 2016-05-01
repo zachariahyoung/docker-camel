@@ -18,7 +18,8 @@ error:
   route:
     in-url: direct:error
     out-url: activemq:EXCEPTION
-
+server:
+  port: 8081
 ---
 spring:
   profiles: docker
@@ -38,4 +39,5 @@ error:
   route:
     in-url: direct:error
     out-url: activemq:EXCEPTION
-
+server:
+  port: 8081

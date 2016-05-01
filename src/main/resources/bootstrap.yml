@@ -1,5 +1,3 @@
 spring:
   application:
     name: docker-camel-service
-server:
-  port: 0
